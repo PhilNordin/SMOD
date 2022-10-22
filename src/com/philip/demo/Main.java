@@ -11,8 +11,6 @@ public class Main {
     public static void main(String[] args) {
 
         myMenu();
-
-
     }
 
     public static void myMenu(){
@@ -23,14 +21,14 @@ public class Main {
         Monster monster = getMonster();
 
 
-        player1.health = 100;
-        player1.level = 1;
-        player1.strength = 15;
-        player1.intelligence = 10;
-        player1.agility = 50;
+        player1.setHealth(100);
+        player1.setLevel(1);
+        player1.setStrength(15);
+        player1.setIntelligence(25);
+        player1.setAgility(50);
 
         System.out.println("\t\tWhats your name? ");
-        player1.playerName = sc.nextLine();
+        player1.setPlayerName(sc.nextLine());
 
         Game:
         do {
@@ -43,7 +41,7 @@ public class Main {
 
 
 
-            int playerMenu = sc.nextInt();
+            int playerMenu = getUserInputInt();
             switch (playerMenu) {           //MAIN MENU
                 case 1:
                     Scanner scan = new Scanner(System.in);
@@ -58,10 +56,10 @@ public class Main {
                         System.out.println("\t\t3. Return to main menu. ");
 
                         System.out.println("\n\t\tMake your choice:  ");
-                        int playerMenu2 = scan.nextInt();
+                        int playerMenu2 = getUserInputInt();
                         switch (playerMenu2) {
                             case 1:
-                                fightMenu(player1, monster);
+                                fightMenu(player1);
                                 break;
                             case 2:
                                 getPlayerStats(player1);
@@ -94,87 +92,97 @@ public class Main {
 
     }
 
+    public static int getUserInputInt(){
+        Scanner sc = new Scanner(System.in);
+        String userInput;
+        int userInputInt = 0;
+        boolean runInput = true;
 
-    public static void fightMenu(Player player1, Monster monster){
+        do {
+            try{
+                userInput = sc.nextLine();
+                userInputInt = Integer.parseInt(userInput);
+                runInput = false;
+            }catch (Exception e){
+                System.out.println("Wrong format of input. Try again!");
+            }
+        }while(runInput);
+
+
+
+        return userInputInt;
+    }
+
+
+
+
+
+    public static void fightMenu(Player player1){
+        Monster monster = getMonster();
+        System.out.println("The monster is now close and you see it's a big " + monster.getMonsterName() + "! What do you do?");
         Fight:
         do {
-            System.out.println("\n\t\t1. Fight!");
+            System.out.println("\n\t\t1. ATTACK!");
             System.out.println("\t\t2. Check player status.");
             System.out.println("\t\t3. FLEE! ");
             System.out.println("\n\t\tMake your choice:  ");
             Scanner sc = new Scanner(System.in);
-            int choice = sc.nextInt();
+            int choice = getUserInputInt();
             switch(choice){
                 case 1:
                     fight1(player1, monster);
                     break;
                 case 2:
-                    getPlayerStats(player1);
+                    System.out.println(player1.toString());
                     break;
                 case 3:
-                    System.out.println("yo fled the fight");
+                    System.out.println("you fled the fight");
                     break Fight;
-
-
+                default:
+                    System.out.println("invalid number");
+                    break;
             }
-        }while(player1.getHealth()>= 0 && monster.health >= 0);
+        }while(player1.getHealth()> 0 && monster.getHealth() > 0);
 
 
     }
 
-    public static void fight1(Player player, Monster monster){
-        int playerHealth = player.health;
-        int playerStrength = player.strength;
-        int playerLevel = player.level;
-        int playerIntelligence = player.intelligence;
+    public static void fight1(Player player1, Monster monster){
 
-        int monsterHealth = monster.health;
-        int monsterStrength = monster.strength;
-        int monsterBaseDamage = monster.baseDamage;
-
-        int damage = player.calculateDamage(player.strength, player.level);
-        Scanner sc = new Scanner(System.in);
-
-            monsterHealth = monsterHealth - player.calculateDamage(playerStrength,playerLevel);
-            if (monsterHealth <0){
-                monsterHealth = 0;
+            if (player1.getHealth() >= 1){
+                monster.setHealth(monster.getHealth() - player1.calculateDamage(player1.getStrength(),player1.getLevel()));
+                System.out.println(player1.getPlayerName() + " hits " + monster.getMonsterName() +" for " +player1.calculateDamage(player1.getStrength(), player1.getLevel())+ " damage."+ monster.getMonsterName() + "'s remaining hp is:  " + monster.getHealth() + " Hp");
             }
-            System.out.println(player.playerName + " hits " + monster.monsterName +" for " +player.calculateDamage(playerStrength,playerLevel)+ " damage."+ monster.monsterName + "'s remaining hp is:  " + monsterHealth + " Hp");
-
-            if (monsterHealth <=0){
-
+            if (monster.getHealth() < 0){
+                monster.setHealth(0);
             }
 
-            playerHealth = playerHealth - monsterDamage(monsterStrength,monsterBaseDamage);
-
-            if (playerHealth <0){
-                playerHealth = 0;
+            if (monster.getHealth() >= 1) {
+                player1.setHealth(player1.getHealth() - monsterDamage(monster.getStrength(), monster.getBaseDamage()));
+                System.out.println(monster.getMonsterName() +" hits Player for " + monsterDamage(monster.getStrength(),monster.getBaseDamage()) + "hp. " + player1.getPlayerName() +"'s remaining hp is: " + player1.getHealth() + "Hp");
             }
 
-            System.out.println(monster.monsterName +" hits Player for " + monsterDamage(monsterStrength,monsterBaseDamage) + "hp. " + player.playerName +"'s remaining hp is: " + playerHealth + "Hp");
+            if (player1.getHealth() <0){
+                player1.setHealth(0);
+            }
 
 
-        if (monsterHealth > playerHealth){
-            System.out.println("Monster win");
-        } else if (playerHealth==monsterHealth){
-            System.out.println("You died but in the last second you brought the ugly beast with you");
-        }else if (monsterHealth > playerHealth){
-            System.out.println("you died");
+
+        if (player1.getHealth() <= 0){
+            System.out.println("YOU ARE DEAD." + " RIP Sir "+player1.getPlayerName());
             System.exit(0);
+        } else if (player1.getHealth()==0 && monster.getHealth()==0){
+            System.out.println("You died but in the last second you brought the ugly beast with you");
+        }else if (monster.getHealth() <= 0){
+            System.out.println("The " + monster.getMonsterName() + " died." );
         }
 
-        player.health = playerHealth;
-
-
-        if (playerHealth<=0){
-            System.exit(0);
-        } else if (playerHealth==monsterHealth) {
-            System.out.println("You died but in the last second you brought the ugly beast with you");
-        }
-        System.out.println(player.playerName + "'s remaining health is: "+ playerHealth);
-
-
-
+//        if (player1.getHealth()<=0){
+//            System.exit(0);
+//        } else if (player1.getHealth()==monster.getHealth()) {
+//            System.out.println("You died but in the last second you brought the ugly beast with you");
+//        }
+        System.out.println(player1.getPlayerName() + "'s remaining health is: "+ player1.getHealth());
     }
 
     public static void getPlayerStats(Player player1){
@@ -188,94 +196,94 @@ public class Main {
     }
 
 
-    public static void fight(Player player, Monster monster){
-
-
-        int playerHealth = player.health;
-        int playerStrength = player.strength;
-        int playerLevel = player.level;
-        int playerIntelligence = player.intelligence;
-
-        int monsterHealth = monster.health;
-        int monsterStrength = monster.strength;
-        int monsterBaseDamage = monster.baseDamage;
-
-        int damage = player.calculateDamage(player.strength, player.level);
-        Scanner sc = new Scanner(System.in);
-
-        do {
-            monsterHealth = monsterHealth - player.calculateDamage(playerStrength,playerLevel);
-            if (monsterHealth <0){
-                monsterHealth = 0;
-            }
-            System.out.println(player.playerName + " hits " + monster.monsterName +" for " +player.calculateDamage(playerStrength,playerLevel)+ " damage."+ monster.monsterName + "'s remaining hp is:  " + monsterHealth + " Hp");
-
-            if (monsterHealth <=0) break;
-
-            playerHealth = playerHealth - monsterDamage(monsterStrength,monsterBaseDamage);
-
-            if (playerHealth <0){
-                playerHealth = 0;
-            }
-
-            System.out.println(monster.monsterName +" hits Player for " + monsterDamage(monsterStrength,monsterBaseDamage) + "hp. " + player.playerName +"'s remaining hp is: " + playerHealth + "Hp");
-
-        }while(playerHealth >= 0 && monsterHealth >= 0);
-
-        if (monsterHealth > playerHealth){
-            System.out.println("Monster win");
-        } else if (playerHealth==monsterHealth){
-            System.out.println("You died but in the last second you brought the ugly beast with you");
-        }else if (monsterHealth > playerHealth){
-            System.out.println("you died");
-            System.exit(0);
-        }
-
-        player.health = playerHealth;
-
-
-        if (playerHealth<=0){
-            System.exit(0);
-        } else if (playerHealth==monsterHealth) {
-            System.out.println("You died but in the last second you brought the ugly beast with you");
-        }
-        System.out.println(player.playerName + "'s remaining health is: "+ playerHealth);
-
-
-    }
+//    public static void fight(Player player, Monster monster){
+//
+//
+//        int playerHealth = player.health;
+//        int playerStrength = player.;
+//        int playerLevel = player.;
+//        int playerIntelligence = player.intelligence;
+//
+//        int monsterHealth = monster.health;
+//        int monsterStrength = monster.strength;
+//        int monsterBaseDamage = monster.baseDamage;
+//
+//        int damage = player.calculateDamage(player., player.);
+//        Scanner sc = new Scanner(System.in);
+//
+//        do {
+//            monsterHealth = monsterHealth - player.calculateDamage(playerStrength,playerLevel);
+//            if (monsterHealth <0){
+//                monsterHealth = 0;
+//            }
+//            System.out.println(player.playerName + " hits " + monster. +" for " +player.calculateDamage(playerStrength,playerLevel)+ " damage."+ monster. + "'s remaining hp is:  " + monsterHealth + " Hp");
+//
+//            if (monsterHealth <=0) break;
+//
+//            playerHealth = playerHealth - monsterDamage(monsterStrength,monsterBaseDamage);
+//
+//            if (playerHealth <0){
+//                playerHealth = 0;
+//            }
+//
+//            System.out.println(monster. +" hits Player for " + monsterDamage(monsterStrength,monsterBaseDamage) + "hp. " + player.playerName +"'s remaining hp is: " + playerHealth + "Hp");
+//
+//        }while(playerHealth >= 0 && monsterHealth >= 0);
+//
+//        if (monsterHealth > playerHealth){
+//            System.out.println("Monster win");
+//        } else if (playerHealth==monsterHealth){
+//            System.out.println("You died but in the last second you brought the ugly beast with you");
+//        }else if (monsterHealth > playerHealth){
+//            System.out.println("you died");
+//            System.exit(0);
+//        }
+//
+//        player.health = playerHealth;
+//
+//
+//        if (playerHealth<=0){
+//            System.exit(0);
+//        } else if (playerHealth==monsterHealth) {
+//            System.out.println("You died but in the last second you brought the ugly beast with you");
+//        }
+//        System.out.println(player.playerName + "'s remaining health is: "+ playerHealth);
+//
+//
+//    }
 
 
 
     public static Monster getMonster(){
         Monster monster = new Monster();
-        monster.health = 20;
-        monster.strength = 5;
-        monster.baseDamage = 2;
-        monster.monsterName = "Grävling";
+        monster.setHealth(20);
+        monster.setStrength(5);
+        monster.setBaseDamage(2);
+        monster.setMonsterName("Rat");
 
         Monster monster1 = new Monster();
-        monster1.health = 30;
-        monster1.strength = 5;
-        monster1.baseDamage = 2;
-        monster1.monsterName = "Gremling";
+        monster1.setHealth(30);
+        monster1.setStrength(5);
+        monster1.setBaseDamage(2);
+        monster1.setMonsterName("Bug");
 
         Monster monster2 = new Monster();
-        monster2.health = 40;
-        monster2.strength = 5;
-        monster2.baseDamage = 2;
-        monster2.monsterName = "Troll";
+        monster2.setHealth(20);
+        monster2.setStrength(5);
+        monster2.setBaseDamage(2);
+        monster2.setMonsterName("Dragon");
 
         Monster monster3 = new Monster();
-        monster3.health = 50;
-        monster3.strength = 5;
-        monster3.baseDamage = 5;
-        monster3.monsterName = "Mona Sahlin";
+        monster3.setHealth(20);
+        monster3.setStrength(5);
+        monster3.setBaseDamage(5);
+        monster3.setMonsterName("Mona sahlin");
 
         Monster monster4 = new Monster();
-        monster4.health = 60;
-        monster4.strength = 5;
-        monster4.baseDamage = 2;
-        monster4.monsterName = "Lil bow wowser";
+        monster4.setHealth(60);
+        monster4.setStrength(5);
+        monster4.setBaseDamage(2);
+        monster4.setMonsterName("Lil bow wowser");
 
         List<Monster> monsterArray = new ArrayList<>();
         monsterArray.add(monster);

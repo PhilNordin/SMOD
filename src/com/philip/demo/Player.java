@@ -18,6 +18,10 @@ public class Player implements ICombat {
         this.health = health;
     }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
     public int getStrength() {
         return strength;
     }
@@ -53,6 +57,17 @@ public class Player implements ICombat {
     @Override
     public int fight(int health, int damage) {
         return health - damage;
+    }
+
+    @Override
+    public String toString() {
+        return "\t\tStatus: "+
+                "\n\t\tPlayerName: " + playerName +
+                "\n\t\tLevel: " + level +
+                "\n\t\tHealth: " + health +
+                "\n\t\tStrength: " + strength +
+                "\n\t\tAgility: " + agility +
+                "\n\t\tIntelligence: " + intelligence;
     }
 
     @Override
