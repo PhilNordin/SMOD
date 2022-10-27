@@ -1,5 +1,9 @@
 package com.philip.demo;
 
+import java.util.Random;
+
+import static com.philip.demo.Colors.*;
+
 public class Player implements ICombat {
 
     public int health;
@@ -9,6 +13,16 @@ public class Player implements ICombat {
     public int level;
     public String playerName;
 
+    public int experienceGained;
+    public int getExperience;
+
+    public int getExperienceGained() {
+        return experienceGained;
+    }
+
+    public void setExperienceGained(int experienceGained) {
+        this.experienceGained = experienceGained;
+    }
 
     public int getHealth() {
         return health;
@@ -21,6 +35,8 @@ public class Player implements ICombat {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
+
+
 
     public int getStrength() {
         return strength;
@@ -61,17 +77,22 @@ public class Player implements ICombat {
 
     @Override
     public String toString() {
-        return "\t\tStatus: "+
-                "\n\t\tPlayerName: " + playerName +
-                "\n\t\tLevel: " + level +
-                "\n\t\tHealth: " + health +
-                "\n\t\tStrength: " + strength +
-                "\n\t\tAgility: " + agility +
-                "\n\t\tIntelligence: " + intelligence;
+        return "Player Status:\n"+
+                WHITE_BOLD_BRIGHT+"\nName: " + playerName +
+                "\nLevel: " + level +
+                RED_BOLD_BRIGHT + "\nHealth: " + health +
+                GREEN_BOLD_BRIGHT +"\nStrength: " + strength +
+                PURPLE_BOLD_BRIGHT +"\nAgility: " + agility +
+                BLUE_BOLD_BRIGHT +"\nIntelligence: " + intelligence + RESET;
     }
 
     @Override
     public int calculateDamage(int strength,int level) {
+        Random rand = new Random();
+        if (rand.nextInt(10) > 8){
+            System.out.println(YELLOW_BOLD_BRIGHT+"CRITICAL HIT!");
+            return (((strength+level)/4)*10);
+        }
         return (((strength+level)/4)+1);
     }
 

@@ -6,6 +6,15 @@ public class Monster implements ICombat {
     public int strength;
 
     public int baseDamage;
+    public int experience;
+
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int experience) {
+        this.experience = experience;
+    }
 
     public String monsterName;
 
