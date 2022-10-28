@@ -6,15 +6,14 @@ import static com.philip.demo.Colors.*;
 
 public class Player implements ICombat {
 
-    public int health;
-    public int strength;
-    public int agility;
-    public int intelligence;
-    public int level;
-    public String playerName;
+    private int health;
+    private int strength;
+    private int agility;
+    private int intelligence;
+    private int level;
+    private String playerName;
 
     public int experienceGained;
-    public int getExperience;
 
     public int getExperienceGained() {
         return experienceGained;
@@ -35,8 +34,6 @@ public class Player implements ICombat {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-
-
 
     public int getStrength() {
         return strength;
@@ -77,9 +74,9 @@ public class Player implements ICombat {
 
     @Override
     public String toString() {
-        return "Player Status:\n"+
+        return WHITE_BOLD_BRIGHT+"\nPlayer Status:"+
                 WHITE_BOLD_BRIGHT+"\nName: " + playerName +
-                "\nLevel: " + level +
+                YELLOW_BOLD_BRIGHT+"\nLevel: " + level +
                 RED_BOLD_BRIGHT + "\nHealth: " + health +
                 GREEN_BOLD_BRIGHT +"\nStrength: " + strength +
                 PURPLE_BOLD_BRIGHT +"\nAgility: " + agility +

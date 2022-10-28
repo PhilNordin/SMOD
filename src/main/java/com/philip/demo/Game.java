@@ -105,7 +105,7 @@ public class Game {
         do {
             System.out.println(WHITE_BOLD_BRIGHT +"\n1. ATTACK!");
             System.out.println("2. Check player status.");
-            System.out.println("3. FLEE! ");
+            System.out.println("3. RUN! ");
             System.out.println("\nMake your choice:  ");
             Scanner sc = new Scanner(System.in);
             int choice = getUserInputInt();
@@ -114,6 +114,7 @@ public class Game {
                     fight1(player1, monster);
                     break;
                 case 2:
+                    getMonsterStats(monster);
                     System.out.println(player1.toString());
                     break;
                 case 3:
@@ -134,12 +135,20 @@ public class Game {
 
     }
 
-
+    //Fight sekvens
     public static void fight1(Player player1, Monster monster){
 
-        if (player1.getHealth() >= 1){
-            monster.setHealth(monster.getHealth() - player1.calculateDamage(player1.getStrength(),player1.getLevel()));
-            System.out.println(WHITE_BOLD_BRIGHT+player1.getPlayerName() + " hits " + monster.getMonsterName() +" for " +player1.calculateDamage(player1.getStrength(), player1.getLevel())+ " damage. The "+ monster.getMonsterName() + "'s remaining "+RED_BOLD_BRIGHT+"health"+RESET+WHITE_BOLD_BRIGHT +" is:" + monster.getHealth() + " HP");
+        if (player1.getHealth() > 1){
+            int damage = player1.calculateDamage(player1.getStrength(), player1.getLevel());
+
+            monster.setHealth(monster.getHealth() - damage);
+            if (monster.getHealth() < 0){
+                monster.setHealth(0);
+            }
+            System.out.println(WHITE_BOLD_BRIGHT+"You hit the " + monster.getMonsterName() +
+                    " for " +damage +
+                    " damage. The "+ monster.getMonsterName() + "'s remaining "+RED_BOLD_BRIGHT+
+                    "health"+RESET+WHITE_BOLD_BRIGHT +" is:" + monster.getHealth() + " HP");
         }
         if (monster.getHealth() < 0){
             monster.setHealth(0);
@@ -147,11 +156,10 @@ public class Game {
 
         if (monster.getHealth() >= 1) {
             player1.setHealth(player1.getHealth() - monsterDamage(monster.getStrength(), monster.getBaseDamage()));
-            System.out.println(WHITE_BOLD_BRIGHT +monster.getMonsterName() +" hits " + player1.getPlayerName()+ " for " + monsterDamage(monster.getStrength(),monster.getBaseDamage()) + RED_BOLD_BRIGHT +" hp." +RESET+WHITE_BOLD_BRIGHT+ " Your remaining " +RED+"health" +RESET+ WHITE_BOLD_BRIGHT +" is: " + player1.getHealth() + " HP");
-        }
-
-        if (player1.getHealth() <0){
-            player1.setHealth(0);
+            if (player1.getHealth() < 0){
+                player1.setHealth(0);
+            }
+            System.out.println(WHITE_BOLD_BRIGHT +monster.getMonsterName() +" hits you for " + monsterDamage(monster.getStrength(),monster.getBaseDamage()) +" damage."+WHITE_BOLD_BRIGHT+ " Your remaining " +RED+"health" +RESET+ WHITE_BOLD_BRIGHT +" is: " + player1.getHealth() + " HP");
         }
 
         if (player1.getHealth() <= 0){
@@ -168,14 +176,21 @@ public class Game {
 
     public static void getPlayerStats(Player player1) {
         System.out.println(WHITE_BOLD_BRIGHT +"\nPlayer status: ");
-        System.out.println("Name : Sir" + player1.getPlayerName());
-        System.out.println("Level: " + player1.getLevel()+RESET);
-        System.out.println(RED_BOLD_BRIGHT +"\nHealth: " + player1.getHealth());
+        System.out.println("Name : Sir " + player1.getPlayerName() + RESET);
+        System.out.println(YELLOW_BOLD_BRIGHT +"Level: " + player1.getLevel());
+        System.out.println(RED_BOLD_BRIGHT +"Health: " + player1.getHealth());
         System.out.println(GREEN_BOLD_BRIGHT + "Strength: " + player1.getStrength());
         System.out.println(BLUE_BOLD_BRIGHT +"Intelligence: " + player1.getIntelligence());
         System.out.println(PURPLE_BOLD_BRIGHT +"Agility: " + player1.getAgility()+RESET);
     }
+    public static void getMonsterStats(Monster monster)
+    {
+        System.out.println(WHITE_BOLD_BRIGHT +"\nMonster status: ");
+        System.out.println("Name : "+monster.getMonsterName() + RESET);
+        System.out.println(YELLOW_BOLD_BRIGHT +"Strength: " + monster.getStrength());
+        System.out.println(RED_BOLD_BRIGHT +"Health: " + monster.getHealth());
 
+    }
 
     public static void levelUp(Player player, int experience) {
         int currentExp = player.getExperienceGained();
@@ -183,10 +198,16 @@ public class Game {
 
         if (player.getExperienceGained() > (player.getLevel() * 10)) {
             player.setLevel(player.getLevel() + 1);
-            System.out.println(YELLOW_BOLD_BRIGHT +"Experience gained: " + experience + RESET);
-            System.out.println(WHITE_BOLD_BRIGHT +"Level up! You are now level " + player.getLevel()+ RESET);
+            player.setHealth(player.getHealth() + 5);
+            player.setStrength(player.getStrength()+ 2);
+            player.setIntelligence(player.getIntelligence()+ 2);
+            System.out.println(YELLOW_BOLD_BRIGHT +"Experience gained " + experience + RESET);
+            System.out.println(WHITE_BOLD_BRIGHT +"\nLevel up! You are now level " + player.getLevel()+ RESET);
+            System.out.println(RED_BOLD_BRIGHT+"Your health was increased by 5 and is now: "+player.getHealth());
+            System.out.println(GREEN_BOLD_BRIGHT+"Your strength was increased by 2 points, it is now: " + player.getStrength());
+            System.out.println(BLUE_BOLD_BRIGHT+"Your intelligence was increased by 2 points, it is now: "+ player.getIntelligence()+RESET);
         } else {
-            System.out.println(YELLOW_BOLD_BRIGHT +"Experience gained: " + experience + RESET);
+            System.out.println(YELLOW_BOLD_BRIGHT +"Experience gained " + experience + RESET);
         }
     }
 
@@ -245,7 +266,7 @@ public class Game {
 
     public static int monsterDamage(int strength,int baseDamage){
 
-        return baseDamage+(strength*2/4+1);   // IF crit return this and that - flera returns med if statement
+        return baseDamage+(strength*2/4+1);
     }
 
 }
